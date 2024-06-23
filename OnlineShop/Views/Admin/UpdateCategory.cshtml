@@ -1,0 +1,36 @@
+﻿@model OnlineShop.Models.CategoryDetail
+
+@{
+    ViewBag.Title = "UpdateCategory";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="layoutSidenav">
+    <div id="layoutSidenav_nav">
+        <!-- Sidebar HTML content here -->
+    </div>
+    <div id="layoutSidenav_content">
+        <main>
+            <title>Dashboard/Categories</title>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Categories</h1>
+            </div>
+            <div class="card mb-4">
+                @using (Html.BeginForm("UpdateCategory", "Admin", FormMethod.Post))
+                {
+                    @Html.HiddenFor(m => m.CategoryId) <!-- Hidden category ID field -->
+                    <div class="form-group">
+                        <label class="control-label">Category Name</label>
+                        @Html.TextBoxFor(m => m.CategoryName, new { @class = "form-control", placeholder = "Enter Category Name", required = "required", autofocus = "autofocus" })
+                        @Html.ValidationMessageFor(m => m.CategoryName, "", new { @class = "text-danger" })
+                    </div>
+                    @Html.HiddenFor(m => m.IsActive, new { value = "true" }) <!-- Set IsActive to true and hide it -->
+                    @Html.HiddenFor(m => m.IsDelete, new { value = "false" }) <!-- Set IsDeleted to false and hide it -->
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <a href="@Url.Action("Categories", "Admin")" class="btn btn-danger">Cancel</a>
+                }
+            </div>
+        </main>
+    </div>
+</div>
+

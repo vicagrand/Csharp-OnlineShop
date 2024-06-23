@@ -1,0 +1,21 @@
+﻿@model List<OnlineShop.Models.Delivery>
+
+<h2>Your Orders Tracking</h2>
+
+@foreach (var deliveryDetails in Model)
+{
+     <h3 style="color: red;">Order number: @deliveryDetails.OrderId</h3>
+
+    <table border="1">
+        <tr>
+            <th>Order Status</th>
+            <th>Order Tracking</th>
+        </tr>
+        <tr>
+            <td>@deliveryDetails.OrderStatus</td>
+            <td>@deliveryDetails.OrderTracking</td>
+        </tr>
+    </table>
+    <br />
+    <!-- Add some spacing between sections -->
+}

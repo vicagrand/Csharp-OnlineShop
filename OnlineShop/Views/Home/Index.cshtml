@@ -1,0 +1,618 @@
+﻿@model OnlineShop.Models.Home.HomeIndexViewModel
+@using PagedList;
+@using PagedList.Mvc;
+
+
+@{ ViewBag.Title = "Home Page"; }
+
+
+
+<head>
+    <link rel="stylesheet" href="~/Content/MyMainLayout.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/2bfce5b46b.js" crossorigin="anonymous"></script>
+</head>
+<style>
+    .product-container1 {
+        justify-content: center;
+        display: grid;
+        align-items: center;
+        width: 100%;
+        margin: 0px;
+        padding: 10px;
+        background: #fbfbfd;
+    }
+
+    .unit-copy-wrapper {
+        text-align: center;
+    }
+
+    .headline {
+        font-size: 42px;
+        line-height: 1.125;
+        font-weight: 600;
+        letter-spacing: 0.004em;
+    }
+
+    .user-icon {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        font-size: 18px;
+        color: #3c3cfa; /* Change color as needed */
+        cursor: pointer;
+    }
+
+
+    .product-image {
+        width: 100%;
+        height: 100%;
+        /*margin: 0 ;*/
+    }
+
+    .product-image-overlay {
+        margin-right: 180px;
+    }
+
+    .product-container2 {
+        justify-content: center;
+        display: grid;
+        align-items: center;
+        width: 100%;
+        margin: 0px;
+        padding: 10px;
+        background: #000000;
+    }
+
+    .search-container {
+        position: relative;
+        width: 200px;
+        margin-top: 20px;
+        margin-right: 20px; /* Add margin to separate it from the navigation */
+    }
+
+    .search-input {
+        width: calc(100% - 40px);
+        padding: 8px 35px 8px 10px;
+        border: 1px solid #ccc;
+        border-radius: 25px;
+        outline: none;
+    }
+
+    .search-button {
+        position: absolute;
+        top: 60%;
+        right: 0;
+        transform: translateY(-50%);
+        width: 50px;
+        height: 100%;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        outline: none;
+    }
+
+        .search-button img {
+            width: 20px;
+            height: auto;
+        }
+    /* Modal styles */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    .custom-button {
+        display: inline-block;
+        outline: 0;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+        color: #000;
+        background: #fff;
+        line-height: 15px; /* Adjust line-height for smaller buttons */
+        border-radius: 15px; /* Adjust border-radius for smaller buttons */
+        padding: 5px 10px; /* Adjust padding for smaller buttons */
+        font-size: 11px; /* Adjust font size for smaller buttons */
+        font-weight: 400; /* Adjust font weight */
+        box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+        transition: all 0.2s;
+        margin: 10px; /* Add margin between buttons */
+        font-family: 'Roboto', sans-serif; /* Change font family */
+    }
+
+        .custom-button:hover {
+            box-shadow: rgb(246, 84, 174) -2px -2px 0px 2px, rgb(255, 198, 0) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transform: scale(1.01);
+        }
+
+    .notification-button {
+        float: right;
+    }
+    /* CSS for modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    #confirmButton {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        #confirmButton:hover {
+            background-color: #45a049; /* Darker green */
+        }
+</style>
+
+<form method="get">
+    <div class="olContent f1">
+        <h2 style="color:black">Search Product/Category</h2>
+    </div>
+    <div class="olSearch fr">
+        <input type="text" placeholder="Enter Product/Category Name" name="productName" class="inputComn houseText form-control" value="@Request.QueryString["productName"]" />
+
+        <div class="searchIcon">
+            <button type="submit" class="search-button" id="searchButton">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/Magnifying_glass_icon.svg/1024px-Magnifying_glass_icon.svg.png" alt="Search">
+            </button>
+        </div>
+    </div>
+</form>
+
+
+
+<div id="themeSlider" class="carousel slide" data-ride="carousel">
+    <ol class="carousel-indicators">
+        <li data-target="#themeSlider" data-slide-to="0" class="active"></li>
+        <li data-target="#themeSlider" data-slide-to="1"></li>
+        <li data-target="#themeSlider" data-slide-to="2"></li>
+    </ol>
+
+    @* moving Image  *@
+
+    <div class="carousel-inner">
+        <div class="item active">
+            <div class="imgOverlay"></div>
+            <img style="height:320px;width:100%" src="../Images/shutterstock_1973462534.jpg" alt="First slide">
+            <div class="carousel-caption">
+                <h3>In Sale</h3>
+            </div>
+        </div>
+        <div class="item">
+            <div class="imgOverlay"></div>
+            <img style="height:320px;width:100%" src="../Images/apple_2columnresponsive.jpg" alt="Second slide">
+            <div class="carousel-caption">
+                <h3>Our Products</h3>
+            </div>
+        </div>
+        <div class="item">
+            <div class="imgOverlay"></div>
+            <img style="height:320px;width:100%" src="../Images/download.jpg" alt="Third slide">
+            <div class="carousel-caption">
+                <h3>Best sellers</h3>
+            </div>
+        </div>
+    </div>
+
+    <a class="left carousel-control" href="#themeSlider" data-slide="prev">
+        <span class="fa fa-chevron-left"></span>
+    </a>
+    <a class="right carousel-control" href="#themeSlider" data-slide="next">
+        <span class="fa fa-chevron-right"></span>
+    </a>
+
+</div>
+
+
+
+
+@* Our Proudcts *@
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h2>Our Products <small> Best Seller products </small></h2>
+            <div>
+                <a href="@Url.Action("Index", new { sortType = "lowToHigh" })" class="btn btn-link">Price Low to High</a>|
+                <a href="@Url.Action("Index", new { sortType = "highToLow" })" class="btn btn-link">Price High to Low</a>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="priceFilterContainer">
+    <form action="@Url.Action("Index", "Home")" method="get" class="col-2 my-1 p-2" id="filterForm">
+        <div>
+            <h2>Price Range</h2>
+            <div class="my-1">
+                <input type="number" name="minPrice" step="1" placeholder="Min $" class="form-control-sm col-5" id="minPriceInput" />&nbsp;&#8212;&nbsp;
+                <input type="number" name="maxPrice" step="1" placeholder="Max $" class="form-control-sm col-5" id="maxPriceInput" />
+            </div>
+            <button type="submit" id="filterButton" class="btn btn-primary btn-sm mb-3">Filter</button>
+
+        </div>
+
+        <div class="user-icon">
+            @if (Session["IsLoggedIn"] != null && (bool)Session["IsLoggedIn"])
+            {
+                <!-- User is logged in, display icon linking to delivery details page -->
+                <a href="@Url.Action("DeliveryDetails", "Home")">
+                    <i class="fas fa-truck"></i>
+                    <h5>Tracking Orders</h5>
+                </a>
+            }
+            else
+            {
+                <!-- User is not logged in, display icon linking to login page -->
+                <a href="@Url.Action("Login", "Home")">
+
+                    <i class="fas fa-user"></i>
+                    <h5>Login</h5>
+                </a>
+            }
+        </div>
+
+    </form>
+</div>
+
+<div class="row product-container">
+    @foreach (var item in Model.ListOfProducts)
+    {
+        <div class="col-md-3 col-sm-3 col-xs-6" style="margin-bottom: 8px">
+            <div class="thumbnail product-item" style="height: 300px">
+                <img class="img-responsive" title="Click to View Product detail"
+                     style="cursor: pointer; height: 160px; width: 260px" src="~/ProductImg/@item.ProductImg" />
+                <div class="caption">
+
+                    <h5>@item.ProductName</h5>
+
+                    <p>
+                        @if (item.Sale != null)
+                        {
+                        <p style="text-decoration: line-through">@item.Price $</p>
+                        var discount = item.Price - item.Sale;
+                        <p style="color: red">@discount $</p>
+                    }
+                    else
+                    {
+                        <p>@item.Price $</p>
+                    }
+
+
+                        <p>
+                            @if (item.Qnantity > 0)
+                            {
+                                using (Html.BeginForm("AddToCart", "Home", new { productId = item.ProcuctId }))
+                                {
+                                    <button type="submit" class="pull-right"><i class="fa-solid fa-cart-shopping"></i></button>
+                                }
+                                <button class="buyNowBtn pull-right" style="margin-right: 3px;" data-price="@item.Price" data-discount="@item.Sale">Buy Now</button>
+
+
+                            <p>Available</p>
+                        }
+                        else
+                        {
+                            <button id="notifyButton" class="notification-button">
+                                <i class="fas fa-bell"></i> Notify
+                            </button>
+
+                            <p>Not Available</p>
+
+
+                        }
+                            <div class="product-item-badge">
+                                @if (item.IsFeatured == true)
+                                {
+                                    <p>New</p>
+                                }
+                                else
+                                {
+                                    <p>Old</p>
+                                }
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+</div>
+
+<div class="container">
+    <br />
+
+    @Html.PagedListPager(Model.ListOfProducts, page => Url.Action("Index", new { page, productName = ViewBag.ProductName, categoryName = ViewBag.CategoryName, minPrice = ViewBag.MinPrice, maxPrice = ViewBag.MaxPrice, sortType = ViewBag.SortType }))
+
+
+</div>
+
+@*More desig*@
+<div class="product-container1">
+    <div class="unit-copy-wrapper">
+        <h2 class="headline" aria-label="Macbook Air">MacBook Air</h2>
+        <h3 class="subhead" role="presentation">Lean. Mean. M3 machine.</h3>
+    </div>
+    <div class="product-image">
+        <div class="product-image-overlay">
+            <img src="https://store.storeimages.cdn-apple.com/4668/as-images.apple.com/is/macbookair-og-202402?wid=1200&hei=630&fmt=jpeg&qlt=95&.v=1707414684423" alt="MacBook Air" width="600" height="400">
+        </div>
+    </div>
+</div>
+
+<div class="product-container2">
+    <div class="unit-copy-wrapper">
+        <h2 class="headline">iPhone 15 Pro</h2>
+        <h3 class="subhead" role="presentation">Titanium. So strong. So light. So Pro.</h3>
+    </div>
+    <div class="product-image">
+        <div class="product-image-overlay">
+            <img src="https://www.apple.com/newsroom/images/2023/09/apple-unveils-iphone-15-pro-and-iphone-15-pro-max/article/Apple-iPhone-15-Pro-lineup-hero-230912_Full-Bleed-Image.jpg.large.jpg" alt="Iphone 15 pro" width="600" height="400">
+        </div>
+    </div>
+</div>
+<div id="searchResults"></div>
+
+<!--Buy now message -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>If you want to proceed,</p>
+        <p>please log in for order tracking.</p>
+        <p>Alternatively, you can continue to checkout as a guest.</p>
+        <a href="@Url.Action("Login", "Home")" class="custom-button">Log In</a>
+        <button id="continueAsGuestBtn" class="custom-button">Continue as Guest</button>
+    </div>
+</div>
+
+
+<!-- notification message -->
+<div id="notificationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>The product is not available in stock.</p>
+        <p>Enter your email and we will notify</p>
+        <p>you when it's back in stock.</p>
+        <input type="email" id="emailInput" placeholder="Enter your email">
+        <button id="confirmButton">Confirm</button>
+    </div>
+</div>
+
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+   $(document).ready(function() {
+    // Filter button click event
+    $("#filterButton").click(function() {
+        var minPrice = $("#minPriceInput").val();
+        var maxPrice = $("#maxPriceInput").val();
+
+        // Send AJAX request with filter parameters
+        $.ajax({
+            url: "@Url.Action("Index", "Home")",
+            type: "GET",
+            data: { minPrice: minPrice, maxPrice: maxPrice },
+            success: function(data) {
+                // Update product container with filtered products
+                $(".product-container").html(data);
+            },
+            error: function(xhr, status, error) {
+                console.error(xhr.responseText);
+            }
+        });
+    });
+
+</script>
+
+<script>
+    $(document).ready(function() {
+        $("#searchButton").click(function() {
+            var searchQuery = $("#search").val();
+
+            $.ajax({
+                url: "@Url.Action("Index", "Home")",
+                type: "GET",
+                data: { search: searchQuery },
+                success: function(data) {
+                    // Process the returned data and update the view
+                    $("#searchResults").html(data);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $("#notifyButton").click(function () {
+            $("#notificationModal").show();
+        });
+
+        $(".close").click(function () {
+            $("#notificationModal").hide();
+        });
+
+        $(window).click(function (event) {
+            if (event.target === $("#notificationModal")[0]) {
+                $("#notificationModal").hide();
+            }
+        });
+
+        $("#confirmButton").click(function () {
+            var email = $("#emailInput").val();
+            // Here you can handle sending the email or any other action you need
+            // For now, let's just close the modal
+            $("#notificationModal").hide();
+        });
+    });
+</script>
+
+<script>
+$(document).ready(function () {
+    var buyNowPrice; // Declare the variable outside the click event handler
+
+    // Function to handle "Buy Now" button click
+    $(".buyNowBtn").click(function () {
+        // Retrieve the price from the data attribute
+        var price = parseFloat($(this).data("price"));
+        var discount = parseFloat($(this).data("discount"));
+
+        // Check if the discount is available
+        if (discount !== undefined && !isNaN(discount) && discount > 0) {
+            // Use the discounted price
+            buyNowPrice = price-discount;
+        } else {
+            // Use the original price
+            buyNowPrice = price;
+        }
+
+        console.log("Buy Now Price:", buyNowPrice); // Log the price to the console
+        $("#myModal").show(); // Show the modal
+        // You can now use the buyNowPrice variable to pass the price to the payment page or perform other actions.
+    });
+
+    // Function to handle closing the modal when "x" button is clicked
+    $(".close").click(function () {
+        $("#myModal").hide(); // Hide the modal
+    });
+
+    // Function to handle "Continue as Guest" button click
+    $("#continueAsGuestBtn").click(function () {
+        // Redirect to the payment page with the saved price as a query parameter
+        if (buyNowPrice !== undefined) {
+            window.location.href = "@Url.Action("PaymentP", "PaymentP")?total=" + encodeURIComponent(buyNowPrice);
+        } else {
+            console.error("Buy Now Price is undefined.");
+        }
+    });
+
+
+});
+
+</script>
+
+<script>
+        $(document).ready(function() {
+            var currentPage = 1; // Initialize current page to 1
+
+            // Function to fetch products for a given page
+            function fetchProducts(page) {
+                $.ajax({
+                    url: "@Url.Action("FetchProducts", "Home")", // Update with your controller action
+                    type: "GET",
+                    data: { page: page }, // Send the page number as a parameter
+                    success: function(data) {
+                        // Update the product list with the fetched products
+                        $("#product-list").html(data);
+                        // Update the current page
+                        currentPage = page;
+                        // Update the pagination buttons
+                        updatePaginationButtons();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error(xhr.responseText);
+                    }
+                });
+            }
+
+            // Function to update pagination buttons based on current page
+            function updatePaginationButtons() {
+                // Clear existing buttons
+                $("#pagination-buttons").empty();
+                // Add "Previous" button if not on the first page
+                if (currentPage > 1) {
+                    $("#pagination-buttons").append('<button class="page-button" data-page="' + (currentPage - 1) + '">Previous</button>');
+                }
+                // Add "Next" button if not on the last page
+                if (@Model.ListOfProducts.HasNextPage) {
+                    $("#pagination-buttons").append('<button class="page-button" data-page="' + (currentPage + 1) + '">Next</button>');
+                }
+            }
+
+            // Event handler for pagination button clicks
+            $("#pagination-buttons").on("click", ".page-button", function() {
+                var page = $(this).data("page");
+                fetchProducts(page);
+            });
+
+            // Fetch initial set of products
+            fetchProducts(currentPage);
+        });
+</script>
+
+
+

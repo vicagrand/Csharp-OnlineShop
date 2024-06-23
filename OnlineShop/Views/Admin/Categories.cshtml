@@ -1,0 +1,66 @@
+﻿@model List<OnlineShop.DAL.Tbl_Category>
+@{
+    ViewBag.Title = "Categories";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+
+
+
+    <div id="layoutSidenav_content">
+        <main>
+            <title>Dashboard/Categories</title>
+            <div class="container-fluid px-4">
+                <h1 class="mt-4">Categories</h1>
+                <a href="@Url.Action("UpdateCategory", "Admin")" class="btn btn-info pull-right fa fa-plus">Add New</a>
+
+
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header">
+                    <i class="fas fa-table me-1"></i>
+                    <div class="card-body">
+                        <table id="datatablesSimple" class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Category Name</th>
+                                    <th>Action</th>
+
+                                </tr>
+                            </thead>
+                            <tfoot>
+                                <tr>
+                                    <th>Sr.no</th>
+                                    <th>Category Name</th>
+                                    <th>Action</th>
+                            </tfoot>
+                            <tbody>
+                                @foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td>@(Model.IndexOf(item)+1)</td>
+                                        <td>@item.CategoryName</td>
+                                        <td>
+                                            @Html.ActionLink("Edit", "CategoryEdit", new { catId = item.CategoryId })
+                                        </td>
+                                    </tr>
+                                }
+                                <tr>
+                                </tr>
+                                <tr>
+
+
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+
+
+
+

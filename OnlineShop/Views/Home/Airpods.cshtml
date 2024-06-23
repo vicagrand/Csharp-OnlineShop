@@ -1,0 +1,279 @@
+﻿@model OnlineShop.Models.Home.HomeIndexViewModel
+@using PagedList;
+@using PagedList.Mvc;
+
+<head>
+    <link rel="stylesheet" href="~/Content/MyMainLayout.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://kit.fontawesome.com/2bfce5b46b.js" crossorigin="anonymous"></script>
+</head>
+<style>
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .notification-button {
+        float: right;
+    }
+    /* CSS for modal */
+    .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+    }
+
+    .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+    #confirmButton {
+        background-color: #4CAF50; /* Green */
+        color: white;
+        padding: 5px 10px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        margin: 4px 2px;
+        cursor: pointer;
+        border-radius: 4px;
+    }
+
+        #confirmButton:hover {
+            background-color: #45a049; /* Darker green */
+        }
+
+    .custom-button {
+        display: inline-block;
+        outline: 0;
+        border: 0;
+        cursor: pointer;
+        text-decoration: none;
+        position: relative;
+        color: #000;
+        background: #fff;
+        line-height: 15px; /* Adjust line-height for smaller buttons */
+        border-radius: 15px; /* Adjust border-radius for smaller buttons */
+        padding: 5px 10px; /* Adjust padding for smaller buttons */
+        font-size: 11px; /* Adjust font size for smaller buttons */
+        font-weight: 400; /* Adjust font weight */
+        box-shadow: rgb(255, 198, 0) -2px -2px 0px 2px, rgb(246, 84, 174) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+        transition: all 0.2s;
+        margin: 10px; /* Add margin between buttons */
+        font-family: 'Roboto', sans-serif; /* Change font family */
+    }
+
+        .custom-button:hover {
+            box-shadow: rgb(246, 84, 174) -2px -2px 0px 2px, rgb(255, 198, 0) 0px 0px 0px 4px, rgba(0, 0, 0, 0.05) 0px 0px 2px 7px;
+            transform: scale(1.01);
+        }
+</style>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h2>Our Airpods Products </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row product-container">
+    @{ var airpodsProducts = Model.ListOfProducts.Where(p => p.ProductName.ToLower().Contains("airpods")).ToPagedList(1, Model.ListOfProducts.Count()); }
+
+    @foreach (var item in airpodsProducts)
+    {
+<div class="col-md-3 col-sm-3 col-xs-6" style="margin-bottom: 8px">
+    <div class="thumbnail product-item" style="height: 300px">
+        <img class="img-responsive" title="Click to View Product detail"
+             style="cursor: pointer; height: 160px; width: 260px" src="~/ProductImg/@item.ProductImg" />
+        <div class="caption">
+
+            <h5>@item.ProductName</h5>
+
+            <p>
+                @if (item.Sale != null)
+                {
+<p style="text-decoration: line-through">@item.Price $</p> var discount = item.Price - item.Sale;
+<p style="color: red">@discount $</p> }
+else
+{
+<p>@item.Price $</p>}
+
+
+                <p>
+                    @if (item.Qnantity > 0)
+                    {
+                        using (Html.BeginForm("AddToCart", "Home", new { productId = item.ProcuctId }))
+                        {
+    <button type="submit" class="pull-right"><i class="fa-solid fa-cart-shopping"></i></button> }
+<button class="buyNowBtn pull-right" style="margin-right: 3px;" data-price="@item.Price" data-discount="@item.Sale">Buy Now</button>
+
+
+                <p>Available</p> }
+            else
+            {
+<button id="notifyButton" class="notification-button">
+    <i class="fas fa-bell"></i> Notify
+</button>
+
+                    <p>Not Available</p>}
+                    <div class="product-item-badge">
+                        @if (item.IsFeatured == true)
+                        {
+        <p>New</p> }
+    else
+    {
+<p>Old</p>}
+                    </div>
+
+                </div>
+            </div>
+        </div>}
+</div>
+
+
+<!--Buy now message -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>If you want to proceed,</p>
+        <p>please log in for order tracking.</p>
+        <p>Alternatively, you can continue to checkout as a guest.</p>
+        <a href="@Url.Action("Login", "Home")" class="custom-button">Log In</a>
+        <button id="continueAsGuestBtn" class="custom-button">Continue as Guest</button>
+    </div>
+</div>
+
+
+<!-- notification message -->
+<div id="notificationModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>The product is not available in stock.</p>
+        <p>Enter your email and we will notify</p>
+        <p>you when it's back in stock.</p>
+        <input type="email" id="emailInput" placeholder="Enter your email">
+        <button id="confirmButton">Confirm</button>
+    </div>
+</div>
+
+
+<div class="container">
+    <br />
+    @{ var page = Request.QueryString["page"] != null ? int.Parse(Request.QueryString["page"]) : 1;
+@Html.PagedListPager(airpodsProducts, pageNumber => Url.Action("iphone", new { page = pageNumber, search = Request.QueryString["search"] })) }
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#notifyButton").click(function () {
+            $("#notificationModal").show();
+        });
+
+        $(".close").click(function () {
+            $("#notificationModal").hide();
+        });
+
+        $(window).click(function (event) {
+            if (event.target === $("#notificationModal")[0]) {
+                $("#notificationModal").hide();
+            }
+        });
+
+        $("#confirmButton").click(function () {
+            var email = $("#emailInput").val();
+            // Here you can handle sending the email or any other action you need
+            // For now, let's just close the modal
+            $("#notificationModal").hide();
+        });
+    });
+</script>
+
+<script>
+$(document).ready(function () {
+    var buyNowPrice; // Declare the variable outside the click event handler
+
+    // Function to handle "Buy Now" button click
+    $(".buyNowBtn").click(function () {
+        // Retrieve the price from the data attribute
+        var price = parseFloat($(this).data("price"));
+        var discount = parseFloat($(this).data("discount"));
+
+        // Check if the discount is available
+        if (discount !== undefined && !isNaN(discount) && discount > 0) {
+            // Use the discounted price
+            buyNowPrice = price-discount;
+        } else {
+            // Use the original price
+            buyNowPrice = price;
+        }
+
+        console.log("Buy Now Price:", buyNowPrice); // Log the price to the console
+        $("#myModal").show(); // Show the modal
+        // You can now use the buyNowPrice variable to pass the price to the payment page or perform other actions.
+    });
+
+    // Function to handle closing the modal when "x" button is clicked
+    $(".close").click(function () {
+        $("#myModal").hide(); // Hide the modal
+    });
+
+    // Function to handle "Continue as Guest" button click
+    $("#continueAsGuestBtn").click(function () {
+        // Redirect to the payment page with the saved price as a query parameter
+        if (buyNowPrice !== undefined) {
+            window.location.href = "@Url.Action("PaymentP", "PaymentP")?total=" + encodeURIComponent(buyNowPrice);
+        } else {
+            console.error("Buy Now Price is undefined.");
+        }
+    });
+
+
+});
+
+</script>
+
+

@@ -1,0 +1,60 @@
+﻿@model OnlineShop.Models.Home.HomeIndexViewModel
+@using PagedList;
+@using PagedList.Mvc;
+<head>
+    <link rel="stylesheet" href="~/Content/MyMainLayout.css" />
+    <script src="https://kit.fontawesome.com/2bfce5b46b.js" crossorigin="anonymous"></script>
+</head>
+<div class="row">
+    <div class="col-md-12">
+        <div class="page-header">
+            <h2>Our Most Popular Products </h2>
+        </div>
+    </div>
+</div>
+
+<div class="row product-container">
+   
+    @{ var featuredProducts = Model.ListOfProducts.Where(p => p.IsFeatured == true).ToPagedList(1, Model.ListOfProducts.Count()); }
+
+    @foreach (var item in featuredProducts)
+    {
+<div class="col-md-4 col-sm-4 col-xs-6" style="margin-bottom:8px">
+    <div class="thumbnail product-item" style="height:300px">
+        <img class="img-responsive" title="Click to View Product detail"
+             style="cursor:pointer;height:150px;width:80%" src="~/ProductImg/@item.ProductImg" />
+        <div class="caption">
+            <h5>@item.ProductName</h5>
+            <p>@item.Price $</p>
+            <p>
+                @if (item.Qnantity > 0)
+                {
+                    using (Html.BeginForm("AddToCart", "Home", new { productId = item.ProcuctId }))
+                    {
+<button type="submit" class="pull-right"><i class="fa-solid fa-cart-shopping"></i></button> }
+<button type="submit" class="pull-right" style="margin-right: 3px;">Buy Now</button> <!-- Add margin to the right -->
+
+                <p>Available</p> }
+            else
+            {
+<p>Not Available</p>}
+
+                <div class="product-item-badge">
+                    @if (item.IsFeatured == true)
+                    {
+    <p>New</p> }
+else
+{
+<p>Old</p>}
+                </div>
+            </div>
+        </div>
+    </div>}
+</div>
+
+<div class="container">
+    <br />
+    @{ var page = Request.QueryString["page"] != null ? int.Parse(Request.QueryString["page"]) : 1;
+@Html.PagedListPager(featuredProducts, pageNumber => Url.Action("iphone", new { page = pageNumber, search = Request.QueryString["search"] })) }
+</div>
+

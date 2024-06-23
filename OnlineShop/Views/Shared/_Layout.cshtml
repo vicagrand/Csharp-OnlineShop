@@ -1,0 +1,142 @@
+﻿@using OnlineShop.Models.Home;
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    <link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-some-hash" crossorigin="anonymous" />
+
+    <style>
+        /* CSS styles for the logo */
+        .logo {
+            text-align: center;
+            padding: 20px;
+        }
+
+            .logo img {
+                width: 100px;
+                height: auto;
+                border-radius: 10px;
+            }
+
+        .search-container {
+            position: relative;
+            width: 200px;
+            margin-top: 20px;
+            margin-right: 20px; /* Add margin to separate it from the navigation */
+        }
+
+        .search-input {
+            width: calc(100% - 40px);
+            padding: 8px 35px 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 25px;
+            outline: none;
+        }
+
+        .search-button {
+            position: absolute;
+            top: 60%;
+            right: 0;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 100%;
+            background-color: transparent;
+            border: none;
+            cursor: pointer;
+            outline: none;
+        }
+
+            .search-button img {
+                width: 20px;
+                height: auto;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="nav-menus">
+                    <ul class="nav nav-pills">
+                        <li class="active"><a style="border-radius:initial;background-color:gray;" href="@Url.Action("Index", "Home")">Home </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("About", "Home")">About</a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("iphone", "Home")">iphone </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("ipad", "Home")">ipad </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("Watch", "Home")">Watch </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("Airpods", "Home")">Airpods </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("Mac", "Home")">Mac </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("InSaleProd", "Home")">In sale </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("MostPopular", "Home")">Most Popular </a></li>
+                        <li><a style="border-radius:initial;" href="@Url.Action("Contact", "Home")">Contact us </a></li>
+
+                        <li>
+                            <div class="col-md-6 col-sm-6 col-xs-6">
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="dropdown">
+                                        <a data-toggle="dropdown" class="dropdown-toggle" href="#">
+                                            <i class="fas fa-shopping-bag"></i> <!-- Font Awesome shopping bag icon -->
+                                            <b class="caret"></b>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            @if (Session["cart"] != null)
+                                            {
+                                                foreach (var Item in (List<Item>)Session["cart"])
+                                                {
+                                                    <li>
+                                                        <a href="@Url.Action("RemoveFromCart","Home", new {productId=Item.product.ProcuctId})">
+                                                            @Item.product.ProductName (@Item.Qnantity)
+                                                            <i class="fa fa-times"></i>
+                                                        </a>
+                                                    </li>
+                                                }
+                                            }
+                                            <li class="divider"></li>
+                                            <li><a href="../Home/Checkout">Check Out</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Centered Apple logo -->
+        <div class="row">
+            <div class="col-md-12 text-center">
+                <div class="logo">
+                    <a href="#">
+                        <img src="https://assets-global.website-files.com/62b0e6308cc691625470b227/62dec0259f18b71442a15966_Apple-Logo.png" title="Apple Shopping Store">
+                    </a>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Remaining content -->
+    </div>
+    <div>
+    @RenderBody()
+    <hr />
+    <footer>
+        <div class="row">
+            <div class=" col-md-12 copyright">
+                <div class="col-md-6 col-sm-6 copyright-left">
+                    <p>&copy; @DateTime.Now.Year - AppleStore, All right reserved.</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

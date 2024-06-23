@@ -1,0 +1,74 @@
+﻿@model OnlineShop.DAL.Tbl_Users
+
+
+
+@{ ViewBag.Title = "Login"; }
+<style>
+    .shorter-textbox {
+        width: 200px; /* Adjust width as needed */
+    }
+
+    .custom-button {
+        display: inline-block;
+        outline: 0;
+        border: 0;
+        cursor: pointer;
+        position: relative;
+        color: #fff;
+        background: #3498db; /* Button background color */
+        border-radius: 5px; /* Button border radius */
+        padding: 5px 10px; /* Button padding */
+        font-size: 16px; /* Button font size */
+        font-weight: bold; /* Button font weight */
+        border: 2px solid #2980b9; /* Button border */
+        transition: all 0.3s ease;
+    }
+
+        .custom-button:hover {
+            background: #2980b9; /* Button background color on hover */
+        }
+</style>
+
+<h2>Login</h2>
+@if (!string.IsNullOrEmpty(ViewBag.ErrorMessage))
+{
+<div class="alert alert-danger">@ViewBag.ErrorMessage</div>}
+
+@using (Html.BeginForm())
+{
+@Html.AntiForgeryToken()
+
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.UserId, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.UserId, new { htmlAttributes = new { @class = "form-control shorter-textbox custom-textbox" } })
+                            @Html.ValidationMessageFor(model => model.UserId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Password, htmlAttributes: new { @class = "control-label col-md-2" })
+                        <div class="col-md-10">
+                            @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control shorter-textbox custom-textbox", type = "password", inputmode = "none" } })
+                            @Html.ValidationMessageFor(model => model.Password, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-10">
+
+                            <button type="submit" class="custom-button">Login</button>
+                        </div>
+                    </div>
+                </div>}
+
+
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+
